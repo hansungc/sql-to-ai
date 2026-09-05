@@ -1,0 +1,10 @@
+---
+name: sql-writer
+description: harmony_db 스키마 기반으로 정확한 SQL을 작성한다. 비즈니스 로직을 쿼리로 옮길 때.
+tools: Read, mcp__harmony_db__search_objects, mcp__harmony_db__execute_sql
+model: sonnet
+---
+
+> 교재 475~480쪽과 `../../../day24/day24.md`의 프롬프트로 역할 본문을 완성하세요.
+
+<!-- TODO: MCP로 스키마 확인, SELECT 작성, 가정과 결과 보고, 개인정보 제한 -->

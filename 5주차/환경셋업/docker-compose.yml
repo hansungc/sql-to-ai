@@ -1,0 +1,44 @@
+# ============================================
+# HARMONY 5주차 실습용 MySQL 8.4 LTS
+#
+# 사용법:  docker compose up -d
+#   → 첫 실행 시 HARMONY 데이터셋(harmony_v1.sql)과 query_history 테이블이
+#     자동으로 적재됩니다. 자세한 안내는 같은 폴더의 '도커로_MySQL_준비하기.md' 참고.
+# ============================================
+# 한글 폴더명과 기존 Compose 프로젝트의 충돌을 피합니다.
+name: ${HARMONY_COMPOSE_PROJECT:-harmony-week5}
+
+services:
+  harmony-mysql:
+    image: mysql:8.4.10
+    environment:
+      # 환경셋업/.env에서 읽습니다. 저장소에는 실제 비밀번호를 넣지 않습니다.
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?환경셋업/.env에 MYSQL_ROOT_PASSWORD를 설정하세요}
+      MYSQL_DATABASE: harmony_db
+      TZ: Asia/Seoul
+    ports:
+      # 내 PC에 이미 3306을 쓰는 MySQL이 있다면:
+      #   환경셋업/.env의 HARMONY_DB_PORT=13306으로 바꾼 후 up 하세요.
+      #   (harmony-analysis/.env에도 같은 포트를 적습니다)
+      - "127.0.0.1:${HARMONY_DB_PORT:-3306}:3306"
+    volumes:
+      # 문자셋 설정 - 서버·클라이언트(초기 적재 포함) 모두 utf8mb4 (한글 깨짐 방지)
+      - ./mysql-utf8mb4.cnf:/etc/mysql/conf.d/harmony.cnf:ro
+      # 첫 실행(빈 볼륨)일 때만 자동 실행되는 초기화 스크립트
+      - ../harmony-analysis/harmony_v1.sql:/docker-entrypoint-initdb.d/01_harmony_v1.sql:ro
+      - ./query_history_setup.sql:/docker-entrypoint-initdb.d/02_query_history.sql:ro
+      # 데이터 영속화(컨테이너를 지워도 데이터 유지)
+      - harmony-mysql-data:/var/lib/mysql
+    healthcheck:
+      # 단순 ping은 '적재 중'에도 성공해서, 데이터가 없는데 healthy로 표시됩니다.
+      # (초기화 중에는 임시 서버가 소켓으로만 떠 있기 때문입니다.)
+      # 그래서 ① TCP로 접속하고 ② 마지막 초기화 스크립트가 만드는 query_history까지
+      # 확인합니다. 이 검사가 통과하면 데이터 적재가 실제로 끝난 상태입니다.
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_ROOT_PASSWORD\" mysql -h 127.0.0.1 -uroot -e 'SELECT 1 FROM harmony_db.query_history LIMIT 1' >/dev/null 2>&1"]
+      interval: 3s
+      timeout: 5s
+      retries: 40
+      start_period: 30s
+
+volumes:
+  harmony-mysql-data:

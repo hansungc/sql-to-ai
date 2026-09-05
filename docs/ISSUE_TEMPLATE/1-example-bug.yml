@@ -1,0 +1,83 @@
+name: 예제 파일 오류 제보
+description: 예제 파일이 실행되지 않거나, 책에 인쇄된 결과와 다르게 나올 때
+title: "[예제] "
+labels: ["예제 오류"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        예제 파일 자체의 결함을 제보하는 곳입니다. 고쳐서 저장소에 반영합니다.
+
+        **실습하다 막힌 것**(에러 해결, 환경 설정, 사용법)이라면 여기가 아니라
+        [Q&A 게시판](https://github.com/hansungc/sql-to-ai/discussions/categories/q-a)에
+        남겨 주세요. 그쪽이 훨씬 빨리 답변드릴 수 있습니다.
+
+  - type: input
+    id: location
+    attributes:
+      label: 어느 파일인가요
+      description: 파일 경로와 예제 번호를 적어 주세요.
+      placeholder: 3주차/day12.sql · 예제 14
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 어떤 문제인가요
+      options:
+        - 실행하면 에러가 난다
+        - 에러는 없는데 결과가 책과 다르다
+        - 파일 안의 설명·주석이 틀렸다
+        - 파일이나 폴더가 없다
+        - 그 밖의 문제
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 책에는 어떻게 나와 있나요
+      description: 해당 쪽수와 인쇄된 결과를 적어 주세요.
+      placeholder: |
+        356쪽 결과 표에 track_id 7(Rising), 8(Phoenix Fire)로 인쇄되어 있습니다.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 실제로는 어떻게 나왔나요
+      description: 실행한 쿼리와 결과(또는 오류 메시지)를 붙여 주세요.
+      render: text
+    validations:
+      required: true
+
+  - type: dropdown
+    id: env
+    attributes:
+      label: 실행 환경
+      options:
+        - db-fiddle
+        - 도커 (5주차/환경셋업의 docker compose)
+        - 내 PC에 직접 설치한 MySQL
+        - 그 밖의 환경
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: MySQL 버전
+      description: "`SELECT VERSION();` 결과를 적어 주세요."
+      placeholder: "8.4.10"
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: 운영체제
+      placeholder: macOS 15 / Windows 11 / Ubuntu 24.04 / WSL2
+    validations:
+      required: false

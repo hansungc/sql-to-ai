@@ -1,0 +1,20 @@
+-- ============================================
+-- Day 24: 기록용 쓰기 전용 계정 만들기 (교재 473쪽)
+-- record-query.sh가 사용하는 계정. Day 22의 읽기 전용 계정과 별개로,
+-- query_history 테이블에만 INSERT할 수 있습니다.
+-- 관리자 계정으로 실행하세요.
+-- ============================================
+
+-- MySQL: 기록용 쓰기 전용 계정(관리자 권한 필요)
+-- ⚠ 이 추적 파일은 직접 수정하지 않습니다.
+--    recorder_account.sql.local로 복사한 뒤 '비밀번호'를 바꾸세요.
+--    이 계정은 '@%'(어느 호스트에서나 접속)로 만들어지므로, 그대로 두면
+--    DB 포트가 외부에 열려 있으면 같은 망의 누구나 이 비밀번호로 접속할 수 있습니다.
+CREATE USER IF NOT EXISTS 'recorder'@'%' IDENTIFIED BY '비밀번호';
+ALTER USER 'recorder'@'%' IDENTIFIED BY '비밀번호';
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'recorder'@'%';
+GRANT INSERT ON harmony_db.query_history TO 'recorder'@'%';
+FLUSH PRIVILEGES;
+
+-- 이후 셸에서 훅이 읽을 환경 변수를 설정합니다.
+--   harmony-analysis/.env의 RECORDER_PASSWORD에 같은 값을 적고 셸에 적용합니다.

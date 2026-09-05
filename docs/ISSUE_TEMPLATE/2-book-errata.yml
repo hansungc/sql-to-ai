@@ -1,0 +1,49 @@
+name: 교재 본문 오류·오탈자 제보
+description: 책 지면의 오탈자, 잘못된 설명, 실행되지 않는 인쇄 코드를 발견했을 때
+title: "[정오] "
+labels: ["정오표"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        책 **지면**의 오류를 제보하는 곳입니다. 확인 후 정오표에 반영하고
+        [Announcements](https://github.com/hansungc/sql-to-ai/discussions/categories/announcements)에
+        공지합니다. 다음 쇄에도 반영합니다.
+
+        예제 **파일**의 오류라면 '예제 파일 오류 제보'를 써 주세요.
+
+  - type: input
+    id: page
+    attributes:
+      label: 몇 쪽인가요
+      description: 책장에 인쇄된 쪽번호를 적어 주세요.
+      placeholder: 356쪽
+    validations:
+      required: true
+
+  - type: input
+    id: where
+    attributes:
+      label: 그 쪽의 어디인가요
+      placeholder: Day 16 · 예제 3 결과 표 / 두 번째 문단 / 그림 5-2 아래
+    validations:
+      required: true
+
+  - type: textarea
+    id: printed
+    attributes:
+      label: 책에 인쇄된 내용
+      description: 그대로 옮겨 적어 주세요.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: correction
+    attributes:
+      label: 무엇이 잘못되었고, 어떻게 고쳐야 할까요
+      placeholder: |
+        track_id가 7·8로 인쇄되어 있으나 현행 데이터셋에서는 34·40입니다.
+        곡명과 재생 수는 일치합니다.
+    validations:
+      required: true

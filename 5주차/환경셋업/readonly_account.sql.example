@@ -1,0 +1,47 @@
+-- ============================================
+-- Day 22: AI 전용 읽기 계정 만들기 (교재 451쪽)
+--
+-- ※ 교재 451쪽은 `GRANT SELECT ON harmony_db.*` 한 줄로 DB 전체를 허용합니다.
+--   이 파일은 같은 뜻이되 테이블을 하나씩 열거하고, fans는 email을 뺀 칼럼만 허용합니다.
+--   교재 459쪽의 "email 칼럼은 리포트에 포함 금지"를 CLAUDE.md의 부탁이 아니라
+--   데이터베이스 권한으로 강제하기 위해서입니다.
+--   교재대로 한 줄만 쓰려면 아래 GRANT들을 지우고 다음 한 줄로 바꾸세요.
+--     GRANT SELECT ON harmony_db.* TO 'claude_readonly'@'%';
+-- 이 SQL은 클로드 코드가 아니라 '데이터베이스 관리자 계정'으로 실행합니다.
+-- 예: 터미널에서 mysql -u root -p 로 접속한 후 붙여 넣기
+-- ============================================
+
+-- MySQL: AI 전용 읽기 계정(관리자 권한 필요)
+-- MCP는 TCP로 접속하므로 소켓 전용 '@localhost' 대신 '@%'로 만듭니다.
+-- '@%'는 어느 호스트에서나 이 계정으로 접속할 수 있다는 뜻입니다. 로컬·사내처럼 신뢰된 망에서만 쓰고,
+-- 외부에 열린 데이터베이스라면 접속 호스트를 특정 IP(예: '...'@'10.0.0.5')로 좁히는 게 안전합니다.
+-- ⚠ 이 추적 파일은 직접 수정하지 않습니다.
+--    readonly_account.sql.local로 복사한 뒤 '강력한_비밀번호'를 바꾸세요.
+--    이 계정은 '@%'(어느 호스트에서나 접속)로 만들어지므로, 그대로 두면
+--    DB 포트가 외부에 열려 있으면 같은 망의 누구나 이 비밀번호로 접속할 수 있습니다.
+CREATE USER IF NOT EXISTS 'claude_readonly'@'%' IDENTIFIED BY '강력한_비밀번호';
+ALTER USER 'claude_readonly'@'%' IDENTIFIED BY '강력한_비밀번호';
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'claude_readonly'@'%';
+
+-- 5주차 실습에 필요한 테이블만 허용합니다.
+GRANT SELECT ON harmony_db.artists TO 'claude_readonly'@'%';
+GRANT SELECT ON harmony_db.albums TO 'claude_readonly'@'%';
+GRANT SELECT ON harmony_db.tracks TO 'claude_readonly'@'%';
+GRANT SELECT ON harmony_db.products TO 'claude_readonly'@'%';
+GRANT SELECT ON harmony_db.streaming TO 'claude_readonly'@'%';
+GRANT SELECT ON harmony_db.orders TO 'claude_readonly'@'%';
+GRANT SELECT ON harmony_db.subscription_history TO 'claude_readonly'@'%';
+GRANT SELECT ON harmony_db.fan_activities TO 'claude_readonly'@'%';
+
+-- 팬 테이블의 email은 데이터베이스 권한에서도 제외합니다.
+GRANT SELECT (fan_id, fan_name, join_date, membership_level,
+              favorite_artist_id, country)
+ON harmony_db.fans TO 'claude_readonly'@'%';
+FLUSH PRIVILEGES;
+
+-- query_history는 5주차 환경셋업에서 만드는 테이블입니다.
+-- 도커로 준비했다면 이미 있고, 직접 만든 로컬 MySQL이라면 먼저 아래를 실행하세요.
+--   mysql -u [사용자] -p harmony_db < 5주차/환경셋업/query_history_setup.sql
+-- 테이블이 없으면 이 줄만 'ERROR 1146 ... query_history doesn't exist'로 실패합니다.
+-- 위 권한은 이미 적용된 뒤이므로, 테이블을 만든 다음 이 한 줄만 다시 실행하면 됩니다.
+GRANT SELECT ON harmony_db.query_history TO 'claude_readonly'@'%';

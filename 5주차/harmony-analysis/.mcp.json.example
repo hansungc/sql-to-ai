@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "harmony_db": {
+      "command": "npx",
+      "args": ["-y", "@bytebase/dbhub@1.2.3", "--transport", "stdio"],
+      "env": {
+        "DB_TYPE": "mysql",
+        "DB_HOST": "127.0.0.1",
+        "DB_PORT": "${HARMONY_DB_PORT:-3306}",
+        "DB_USER": "claude_readonly",
+        "DB_PASSWORD": "${DB_PASSWORD}",
+        "DB_NAME": "harmony_db"
+      }
+    }
+  }
+}

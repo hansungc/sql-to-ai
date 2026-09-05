@@ -1,0 +1,11 @@
+# OS 메타데이터
+.DS_Store
+Thumbs.db
+
+# 편집기
+.vscode/
+.idea/
+
+# 실습 중 생기는 파일 (커밋하지 마세요)
+# 5주차 실습 폴더의 세부 규칙은 5주차/harmony-analysis/.gitignore 와
+# 5주차/환경셋업/.gitignore 에 있습니다.

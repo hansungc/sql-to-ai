@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": ["Read"],
+    "ask": ["Edit", "Write"],
+    "deny": [
+      "Bash(rm *)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/*.sql.local)"
+    ]
+  }
+}

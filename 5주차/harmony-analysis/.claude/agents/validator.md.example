@@ -1,0 +1,9 @@
+---
+name: validator
+description: 작성된 SQL의 정확성을 검증한다. 조인·NULL·예외 상황을 의심하고, 반박해 문제를 찾는다.
+tools: Read, mcp__harmony_db__search_objects, mcp__harmony_db__execute_sql
+---
+
+> 교재 475~480쪽과 `../../../day24/day24.md`의 프롬프트로 역할 본문을 완성하세요.
+
+<!-- TODO: 조인, 중복, NULL, 날짜 경계, 독립 재계산, PASS/FAIL 보고 -->

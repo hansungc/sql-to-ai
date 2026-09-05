@@ -1,0 +1,5 @@
+# 로컬 비밀값과 실제 계정 생성 SQL
+.env
+.env.*
+!.env.example
+*.sql.local

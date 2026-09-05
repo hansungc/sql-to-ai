@@ -1,0 +1,13 @@
+# HARMONY 실습용 문자셋 설정
+# 서버와 클라이언트(초기 데이터 적재 포함) 모두 utf8mb4를 사용하게 합니다.
+# 이 설정이 없으면 컨테이너 첫 초기화 때 한글 데이터가 깨질 수 있습니다.
+
+[client]
+default-character-set = utf8mb4
+
+[mysql]
+default-character-set = utf8mb4
+
+[mysqld]
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci

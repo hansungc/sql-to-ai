@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+umask 077
+
+project_dir=$(cd "$(dirname "$0")/.." && pwd)
+env_file="$project_dir/.env"
+
+[ -f "$env_file" ] || {
+  echo "필수 파일이 없습니다: $env_file" >&2
+  exit 1
+}
+
+set -a
+# 이 파일은 사용자가 만든 로컬 비밀 파일이며 Git에서 제외됩니다.
+# shellcheck disable=SC1090
+. "$env_file"
+set +a
+
+export PATH="${NODE_BIN_DIR:-/opt/homebrew/bin}:/usr/local/bin:/usr/bin:/bin"
+claude_bin=${CLAUDE_BIN:-}
+if [ -z "$claude_bin" ] || [ ! -x "$claude_bin" ]; then
+  claude_bin=$(command -v claude || true)
+fi
+[ -n "$claude_bin" ] || {
+  echo "claude 실행 파일을 찾지 못했습니다. .env의 CLAUDE_BIN을 확인하세요." >&2
+  exit 1
+}
+command -v npx >/dev/null 2>&1 || {
+  echo "npx를 찾지 못했습니다. .env의 NODE_BIN_DIR을 확인하세요." >&2
+  exit 1
+}
+[ -n "${DB_PASSWORD:-}" ] || { echo "DB_PASSWORD가 비어 있습니다." >&2; exit 1; }
+[ -n "${RECORDER_PASSWORD:-}" ] || { echo "RECORDER_PASSWORD가 비어 있습니다." >&2; exit 1; }
+
+log_dir="$project_dir/.claude/logs"
+mkdir -p "$log_dir"
+
+cd "$project_dir"
+"$claude_bin" -p \
+  --max-turns 12 \
+  --permission-mode dontAsk \
+  --allowedTools "mcp__harmony_db__search_objects,mcp__harmony_db__execute_sql,Read" \
+  "실습 기준일 2026-09-03을 기준으로 이탈 팬을 점검해 줘. 원본 데이터는 바꾸지 말고 실행 SQL과 검증 결과를 출력해." \
+  >> "$log_dir/churn-check.log" 2>&1

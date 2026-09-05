@@ -1,0 +1,22 @@
+# 개인 환경에서 만든 실제 MCP 설정과 비밀 파일은 커밋하지 않습니다.
+.mcp.json
+.mcp.*.local.json
+.env
+.env.*
+!.env.example
+CLAUDE.local.md
+*.sql.local
+
+# 독자가 실습 중 활성화·완성하는 로컬 파일
+.claude/skills/*/SKILL.md
+.claude/agents/*.md
+scripts/run-churn-check.sh
+
+# 훅이 남기는 실행 로그 - 마스킹했더라도 쿼리 결과 원문이 들어 있으므로 공유 금지
+.claude/logs/
+
+# 분석 결과 산출물(CSV 등)
+reports/*.csv
+
+# OS 메타데이터
+.DS_Store
